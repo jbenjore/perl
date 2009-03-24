@@ -3361,7 +3361,22 @@ lib/unicore/BidiMirroring.txt	Unicode character database
 lib/unicore/Blocks.txt		Unicode character database
 lib/unicore/CaseFolding.txt	Unicode character database
 lib/unicore/CompositionExclusions.txt	Unicode character database
+lib/unicore/DAge.txt
+lib/unicore/DBidiClass.txt
+lib/unicore/DBinaryProperties.txt
+lib/unicore/DCombiningClass.txt
+lib/unicore/DCoreProperties.txt
+lib/unicore/DDecompositionType.txt
+lib/unicore/DEastAsianWidth.txt
+lib/unicore/DGeneralCategory.txt
+lib/unicore/DJoinGroup.txt
+lib/unicore/DJoinType.txt
+lib/unicore/DLineBreak.txt
+lib/unicore/DNormalizationProps.txt
+lib/unicore/DNumType.txt
+lib/unicore/DNumValues.txt
 lib/unicore/EastAsianWidth.txt	Unicode character database
+lib/unicore/GraphemeBreakProperty.txt
 lib/unicore/HangulSyllableType.txt	Unicode character database
 lib/unicore/Index.txt		Unicode character database
 lib/unicore/Jamo.txt		Unicode character database
@@ -3380,10 +3395,12 @@ lib/unicore/PropValueAliases.txt	Unicode character database
 lib/unicore/README.perl		Unicode character database
 lib/unicore/ReadMe.txt		Unicode character database info
 lib/unicore/Scripts.txt		Unicode character database
+lib/unicore/SentenceBreakProperty.txt
 lib/unicore/SpecialCasing.txt	Unicode character database
 lib/unicore/StandardizedVariants.txt	Unicode character database
 lib/unicore/UnicodeData.txt	Unicode character database
 lib/unicore/version		The version of the Unicode
+lib/unicore/WordBreakProperty.txt
 lib/UNIVERSAL.pm		Base class for ALL classes
 lib/User/grent.pm		By-name interface to Perl's builtin getgr*
 lib/User/grent.t		See if User::grwent works

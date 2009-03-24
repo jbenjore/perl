@@ -4,7 +4,7 @@ BEGIN {
     require "test.pl";
 }
 
-plan tests => 5092;
+plan tests => 6124;
 
 sub MyUniClass {
   <<END;
@@ -71,12 +71,12 @@ is(($str =~ /(\p{Other::Class}+)/)[0], '@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_');
 # make sure it finds class in other OTHER package
 is(($str =~ /(\p{A::B::Intersection}+)/)[0], '@ABCDEFGHIJKLMNO');
 
-# all of these should look in lib/unicore/bc/AL.pl
+# lib/unicore/bc/AL.pl
 $str = "\x{070D}\x{070E}\x{070F}\x{0710}\x{0711}";
-is(($str =~ /(\P{BidiClass: ArabicLetter}+)/)[0], "\x{070E}\x{070F}");
-is(($str =~ /(\P{BidiClass: AL}+)/)[0], "\x{070E}\x{070F}");
-is(($str =~ /(\P{BC :ArabicLetter}+)/)[0], "\x{070E}\x{070F}");
-is(($str =~ /(\P{bc=AL}+)/)[0], "\x{070E}\x{070F}");
+is(($str =~ /(\P{BidiClass: ArabicLetter}+)/)[0], "\x{070F}");
+is(($str =~ /(\P{BidiClass: AL}+)/)[0], "\x{070F}");
+is(($str =~ /(\P{BC :ArabicLetter}+)/)[0], "\x{070F}");
+is(($str =~ /(\P{bc=AL}+)/)[0], "\x{070F}");
 
 # make sure InGreek works
 $str = "[\x{038B}\x{038C}\x{038D}]";
@@ -135,7 +135,14 @@ while (my ($abbrev, $files) = each %utf8::PVA_abbr_map) {
     my $str = char_range($h1, $h2);
 
     for my $p ($prop_name, $abbrev) {
-      for my $c ($files->{$_}, $_) {
+
+      # The use of $files is commented out because the file name is not a
+      # totally accurate way to find the name of a property.   The filename can
+      # be truncated so that it can work on an 8 character filesystem, or it
+      # can change because it contains a character, like a dot, that may not be
+      # portable.
+      #for my $c ($files->{$_}, $_) {
+      for my $c ($_) {
         is($str =~ /(\p{$p: $c}+)/ && $1, substr($str, 0, -1));
         is($str =~ /(\P{$p= $c}+)/ && $1, substr($str, -1));
       }

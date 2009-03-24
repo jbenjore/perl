@@ -103,7 +103,8 @@ sub SWASHNEW {
 		my $pa = $PropertyAlias{$enum} ? $enum : $PA_reverse{$enum};
 		my $f = $PropValueAlias{$pa}{$val} ? $val : $PVA_reverse{$pa}{lc $val};
 
-		if ($pa and $f) {
+		if (defined $pa and defined $f) {
+		    $pa = lc $pa;
 		    $pa = "gc_sc" if $pa eq "gc" or $pa eq "sc";
 		    $file = "unicore/lib/$pa/$PVA_abbr_map{$pa}{lc $f}.pl";
 		    last GETFILE;
