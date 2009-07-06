@@ -143,5 +143,6 @@ is($cb->_id, $cb->_last_id, "Comparing ID's");
 # c-indentation-style: bsd
 # c-basic-offset: 4
 # indent-tabs-mode: nil
+# tab-width: 8
 # End:
 # vim: expandtab shiftwidth=4:

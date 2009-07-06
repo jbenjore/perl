@@ -994,5 +994,6 @@ sub dist_dir {
 # c-indentation-style: bsd
 # c-basic-offset: 4
 # indent-tabs-mode: nil
+# tab-width: 8
 # End:
 # vim: expandtab shiftwidth=4:

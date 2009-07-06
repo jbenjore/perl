@@ -33,4 +33,5 @@ is( \&CPAN::Nox::AUTOLOAD, \&CPAN::AUTOLOAD, 'AUTOLOAD should be aliased' );
 # Local Variables:
 # mode: cperl
 # cperl-indent-level: 2
+# tab-width: 8
 # End:

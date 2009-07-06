@@ -33,4 +33,5 @@ for my $m (@m) {
 # Local Variables:
 # mode: cperl
 # cperl-indent-level: 2
+# tab-width: 8
 # End:

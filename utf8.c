@@ -2469,6 +2469,7 @@ Perl_ibcmp_utf8(pTHX_ const char *s1, char **pe1, register UV l1, bool u1, const
  * c-indentation-style: bsd
  * c-basic-offset: 4
  * indent-tabs-mode: t
+ * tab-width: 8
  * End:
  *
  * ex: set ts=8 sts=4 sw=4 noet:

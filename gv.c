@@ -2403,6 +2403,7 @@ Perl_gv_name_set(pTHX_ GV *gv, const char *name, U32 len, U32 flags)
  * c-indentation-style: bsd
  * c-basic-offset: 4
  * indent-tabs-mode: t
+ * tab-width: 8
  * End:
  *
  * ex: set ts=8 sts=4 sw=4 noet:

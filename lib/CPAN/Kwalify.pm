@@ -132,5 +132,6 @@ sub yaml {
 # Local Variables:
 # mode: cperl
 # cperl-indent-level: 4
+# tab-width: 8
 # End:
 

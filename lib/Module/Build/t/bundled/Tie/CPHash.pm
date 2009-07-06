@@ -191,4 +191,5 @@ Christopher J. Madsen E<lt>F<cjm@pobox.com>E<gt>
 
 # Local Variables:
 # tmtrack-file-task: "Tie::CPHash.pm"
+# tab-width: 8
 # End:

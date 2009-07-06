@@ -653,6 +653,7 @@ XS(XS_mro_method_changed_in)
  * c-indentation-style: bsd
  * c-basic-offset: 4
  * indent-tabs-mode: t
+ * tab-width: 8
  * End:
  *
  * ex: set ts=8 sts=4 sw=4 noet:

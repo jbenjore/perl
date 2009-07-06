@@ -91,6 +91,7 @@ sub find_ext
 # Local variables:
 # cperl-indent-level: 4
 # indent-tabs-mode: nil
+# tab-width: 8
 # End:
 #
 # ex: set ts=8 sts=4 sw=4 et:

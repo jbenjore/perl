@@ -731,4 +731,5 @@ modify it under the same terms as Perl itself.
 # Local Variables:
 # mode: cperl
 # cperl-indent-level: 4
+# tab-width: 8
 # End:
