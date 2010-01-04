@@ -621,6 +621,13 @@ but then $foo no longer contains a glob.
 (F) Certain types of SVs, in particular real symbol table entries
 (typeglobs), can't be forced to stop being what they are.
 
+=item Can't communicate with DirectoryService daemon
+
+(F) Perl tried to communicate with the DirectoryService damon but for
+some reason it couldn't be reached.
+
+See the L<mbr_uid_to_uuid> (or related) manual pages for more details.
+
 =item Can't "continue" outside a when block
 
 (F) You called C<continue>, but you're not inside a C<when>
@@ -759,6 +766,11 @@ for a complete list of available properties.
 If you didn't mean to use a Unicode property, escape the C<\p>, either
 by C<\\p> (just the C<\p>) or by C<\Q\p> (the rest of the string, until
 possible C<\E>).
+
+=item Can't find user %d for $)
+
+(W misc) Couldn't find the user id in $> when getting group membership
+for $).
 
 =item Can't fork: %s
 
@@ -1512,6 +1524,51 @@ carried away.
 (F) You passed die() an empty string (the equivalent of C<die "">) or
 you called it with no args and both C<$@> and C<$_> were empty.
 
+=item DirectoryService can't find user %d for mbr_check_membership
+
+(F) The DirectoryService daemon couldn't find the user. This shouldn't
+happen because an earlier getpwuid succeeded for the same user. I'm
+not sure what might be going on here so here's the data flow and
+perhaps you can work it out:
+
+  1. Validate that user in $> exists with getpwuid
+  2. Map $> id to uuid with mbr_uid_to_uuid
+  3. Call mbr_check_membership with the uuid
+
+Note: this error message is nigh identical to "DirectoryService can't
+find user id %s with uuid %s for mbr_check_membership" and appears
+only when your perl build didn't provide a prettification function for
+the uuid.
+
+=item DirectoryService can't find user %d with uuid %s for mbr_check_membership
+
+(F) The DirectoryService daemon couldn't find the user. This shouldn't
+happen because an earlier getpwuid succeeded for the same user. I'm
+not sure what might be going on here so here's the data flow and
+perhaps you can work it out:
+
+  1. Validate that user in $> exists with getpwuid
+  2. Map $> id to uuid with mbr_uid_to_uuid
+  3. Call mbr_check_membership with the uuid
+
+=item DirectoryService mapping group %d to uuid can't be performed
+
+(F) The DirectoryService daemon couldn't translate the gid to a
+uuid. This does not mean the group merely doesn't exist beause
+DirectoryService will succeed and return a fabricated uuid if the
+input gid does not exist.
+
+See the L<mbr_gid_to_uuid> manual page for more details.
+
+=item DirectoryService mapping user %d to uuid can't be performed
+
+(F) The DirectoryService daemon couldn't translate the uid to a
+uuid. This does not mean the user merely doesn't exist beause
+DirectoryService will succeed and return a fabricated uuid if the
+input uid does not exist.
+
+See the L<mbr_uid_to_uuid> manual page for more details.
+
 =item Document contains no data
 
 See Server error.
@@ -1986,6 +2043,10 @@ delimiter used to separate keys from values.  The element is ignored.
 name or CLI symbol definition when preparing to iterate over %ENV, and
 didn't see the expected delimiter between key and value, so the line was
 ignored.
+
+=item Implausibly large number of groups. Expanding past %d
+
+(W misc) You appear to be in more groups than is plausible.
 
 =item (in cleanup) %s
 
@@ -4406,6 +4467,21 @@ off this warning by C<no warnings 'utf8';>.
 
 (F) There are no byte-swapping functions for a machine with this byte
 order.
+
+=item Unknown error while checking user %d membership in group %d
+
+(F) The mbr_check_membership function failed in an undocumented
+way. See the L<mbr_check_membership> manual page for more details.
+
+=item Unknown error while converting group %d to uuid
+
+(F) The mbr_gid_to_uuid function failed in an undocumented way. See
+the L<mbr_gid_to_uuid> manual page for more details.
+
+=item Unknown error while converting user %d to uuid
+
+(F) The mbr_uid_to_uuid function failed in an undocumented way. See
+the L<mbr_uid_to_uuid> manual page for more details.
 
 =item Unknown open() mode '%s'
 

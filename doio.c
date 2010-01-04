@@ -49,6 +49,22 @@
 #  endif
 #endif
 
+#define USE_MBR_CHECK_MEMBERSHIP defined(HAS_PASSWD) && (defined(HAS_MBR_CHECK_MEMBERSHIP) || defined(HAS_MBR_GID_TO_UUID) || defined(HAS_MBR_UID_TO_UUID))
+#if USE_MBR_CHECK_MEMBERSHIP
+#  ifdef I_MEMBERSHIP
+#    include <membership.h>
+#  endif
+#  ifdef I_PWD
+#    include <pwd.h>
+#  endif
+#  ifdef I_GRP
+#    include <grp.h>
+#  endif
+#  ifdef I_UUID_UUID
+#    include <uuid/uuid.h>
+#  endif
+#endif
+
 #ifdef O_EXCL
 #  define OPEN_EXCL O_EXCL
 #else
@@ -1948,7 +1964,130 @@ S_ingroup(pTHX_ Gid_t testgid, bool effective)
     dVAR;
     if (testgid == (effective ? PL_egid : PL_gid))
 	return TRUE;
-#ifdef HAS_GETGROUPS
+#if USE_MBR_CHECK_MEMBERSHIP
+    {
+	int ismember = 0;
+	uid_t uid = effective ? PL_euid : PL_uid;
+	char *user_uuid_s = NULL;
+	SV *croak_sv = NULL;
+	uuid_t user_uuid, group_uuid;
+
+	/* Test that the user exists.
+	 *
+	 * The Apple documentation says that errno can be used to
+	 * detect the difference between a non-existent user and any
+	 * other errors incurred during processing. No such luck.
+	 */
+	if ( NULL == getpwuid(uid) ) {
+	    return FALSE;
+	}
+
+	/* Test that the group exists.
+	 *
+	 * The Apple documentation says that errno can be used to
+	 * detect the difference between a non-existent user and any
+	 * other errors incurred during processing. No such luck.
+	 */
+	if ( NULL == getgrgid(testgid) ) {
+	    return FALSE;
+	}
+
+	/* Look up the effective user's uuid. Note that this succeeds
+	 * and returns fabricated data for invalid uids so the above
+	 * getpwuid is necessary.
+	 */
+	switch (mbr_uid_to_uuid(uid, user_uuid)) {
+	case 0:
+	    break;
+	case ENOENT:
+	    Perl_croak(aTHX_ "DirectoryService mapping user %"IVdf" to uuid can't be performed",
+		       (IV)uid);
+	    return FALSE;
+	case EIO:
+	    Perl_croak(aTHX_ "Can't communicate with DirectoryService daemon");
+	    return FALSE;
+	default:
+	    Perl_croak(aTHX_ "Unknown error while converting user %"IVdf" to uuid",
+		       (IV)uid);
+	    return FALSE;
+	}
+
+	/* Look up the group's uuid. Note that this succeeds and
+	 * returns fabricated data for invalid gids so the above
+	 * getpwgid is necessary.
+	 */
+	switch (mbr_gid_to_uuid(testgid, group_uuid)) {
+	case 0:
+	    break;
+	case ENOENT:
+	    Perl_croak(aTHX_ "DirectoryService mapping group %"IVdf" to uuid can't be performed",
+		       (IV)testgid);
+	    return FALSE;
+	case EIO:
+	    Perl_croak(aTHX_ "Can't communicate with DirectoryService daemon");
+	    return FALSE;
+	default:
+	    Perl_croak(aTHX_ "Unknown error while converting group %"IVdf" to uuid", (IV)testgid);
+	    return FALSE;
+	}
+
+	/* Check membership in all groups, nested or
+	 * whatever. mbr_check_membership should succeed and set
+	 * ismember under all normal conditions.
+	 */
+	switch (mbr_check_membership(user_uuid,group_uuid, &ismember)) {
+	case 0:
+	    return ismember == 1 ? TRUE : FALSE;
+	case ENOENT:
+	    /* This shouldn't happen because of the above check for a
+	     * valid getpwuid result.
+	     */
+
+#ifdef HAS_UUID_UNPARSE
+	    /* I'm really not sure darwin or any other platform would
+	     * have DirectoryServices but not uuid services. It just
+	     * seemed like the right thing to do to enumerate all the
+	     * dependencies and handle them all at once.
+	     */
+
+
+	    /* Start making our croak message. In particular, build
+	     * the string in a mortal SV so perl's GC will reap the
+	     * memory after the exception is thrown.
+	    */
+	    croak_sv = sv_newmortal();
+
+	    /* Convert the UUID to a string for uuid_unparse will
+	     * write a 36 character UUID plus a trailing '\0'. For
+	     * redundancy, I'm setting the trailing '\0'.
+	     */
+	    Newx(user_uuid_s,37,char);
+	    uuid_unparse(user_uuid,user_uuid_s);
+	    user_uuid_s[36] = '\0';
+	    Perl_sv_setpvf(aTHX_ croak_sv,
+			   "DirectoryService can't find user %"IVdf" with uuid %s",
+			   (IV)uid, user_uuid_s);
+	    Safefree(user_uuid_s);
+
+	    Perl_croak(aTHX_ "%"SVf, croak_sv);
+#else
+	    Perl_croak(aTHX_ "DirectoryService can't find user %"IVdf" for mbr_check_membership",
+		       (IV)uid);
+#endif
+	    return FALSE;
+	case EIO:
+	    Perl_croak(aTHX_ "Can't communicate with DirectoryService daemon");
+	    return FALSE;
+	default:
+	    Perl_croak(aTHX_ "Unknown error while checking user %"IVdf" membership in group %"IVdf,
+			(IV)PL_euid, (IV)testgid);
+	    return FALSE;
+	}
+
+	/* NOT REACHED */
+    }
+#else
+#  ifdef HAS_GETGROUPS
     {
 	Groups_t *gary = NULL;
 	I32 anum;
@@ -1966,8 +2105,9 @@ S_ingroup(pTHX_ Gid_t testgid, bool effective)
         Safefree(gary);
         return rc;
     }
-#else
+#  else
     return FALSE;
+#  endif
 #endif
 }
 

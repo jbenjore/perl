@@ -47,6 +47,57 @@ tie.
 #  endif
 #endif
 
+/* TODO: duplicated in mg.c, pp_sys.c */
+#ifdef HAS_PASSWD
+# ifdef I_PWD
+#  include <pwd.h>
+# else
+#  if !defined(VMS)
+    struct passwd *getpwuid (Uid_t);
+#  endif
+# endif
+# ifdef HAS_GETPWENT
+#ifndef getpwent
+  struct passwd *getpwent (void);
+#elif defined (VMS) && defined (my_getpwent)
+  struct passwd *Perl_my_getpwent (pTHX);
+#endif
+# endif
+#endif
+
+#ifdef HAS_GETGROUPLIST
+/* Define our own NGROUPS_MAX to be a reasonable size. From
+ * http://www.j3e.de/ngroups.html.
+ *
+ * Linux >= 2.6.3:   65535
+ * Linux <  2.6.3:   32
+ * Tru64 / OSF/1:    32
+ * IBM AIX 5.2:      64
+ * IBM AIX 5.3:      128
+ * OpenBSD:          16
+ * NetBSD:           16 (but only 15 in practice)
+ * darwin:           16 (but only 14 in practice)
+ * FreeBSD < 8.0:    15
+ * FreeBSD >= 8.0:   1023
+ * Solaris 7,8,9,10: 16 (but may be settable up to 32)
+ * Solaris 11:       1024 (according to http://arc.opensolaris.org/caselog/PSARC/2009/542/20091008_casper.dik)
+ * HP-UX:            20
+ * IRIX:             16 (apparently may be 0-32)
+ * Plan 9:           32
+ * Minix 3:          0 (Minix-vmd: 16)
+ * QNX 6.4:          8
+ * Windows 2000+:    1015 (1024)
+ */
+#  define GROUPLIST_DEFAULT_SIZE 32
+#  ifdef NGROUPS_MAX
+#    define GROUPLIST_SANITY_LIMIT  (NGROUPS_MAX >= 1024 ? NGROUPS_MAX : 1024)
+#  else
+#    define GROUPLIST_SANITY_LIMIT  1024
+#  endif
+#endif
+
+
+
 #if defined(HAS_SETGROUPS)
 #  ifndef NGROUPS
 #    define NGROUPS 32
@@ -1064,19 +1115,84 @@ Perl_magic_get(pTHX_ SV *sv, MAGIC *mg)
 	sv_setiv(sv, (IV)PL_gid);
 	goto add_groups;
     case ')':
+	/* TODO: should this be tainted? */
 	sv_setiv(sv, (IV)PL_egid);
       add_groups:
+#if defined(HAS_PASSWD) && defined(HAS_GETGROUPLIST)
+	{
+	    int num_groups, too_small, i;
+	    SV *gary_sv = NULL;
+	    struct passwd *pwent = NULL;
+
+	    /* Lookup PL_euid to get the current user's name as a
+	     * char*. This may fail since users can set $>.
+	     */
+	    errno = 0;
+	    pwent = getpwuid(PL_euid);
+	    if ( NULL == pwent ) {
+		Perl_warner(aTHX_ packWARN(WARN_MISC),
+			    "Can't find user %"IVdf" for $)", (IV)PL_euid);
+		return 0;
+	    }
+
+	    /* Fetch all the groups, increasing the size of
+	     * gary_sv->PVX til the entire list fits or we expand past
+	     * a sanity check for number of groups. Initially guess
+	     * that there are GROUPLIST_DEFAULT_SIZE or less groups.
+	     *
+	     * gary_sv is a mortal SV instead of simple malloced
+	     * memory so it will be reaped if the warning triggers and
+	     * it happens to be hoisted into an exception.
+	     *
+	     * TODO: can I use the mortal magic against something
+	     * allocated with Newx? I'd like to allocate with Newx
+	     * instead of SvGROW.
+	     */
+	    too_small = -1;
+	    num_groups = GROUPLIST_DEFAULT_SIZE;
+	    gary_sv = sv_newmortal();
+	    sv_setpv(gary_sv,"");
+	    while ( 1 ) {
+		SvGROW( gary_sv, 1+(sizeof(gid_t)*num_groups) );
+		too_small = getgrouplist(pwent->pw_name,
+					 (Getgrouplist_basegid_t)pwent->pw_gid,
+					 (Getgrouplist_group_t*)(SvPVX_mutable(gary_sv)),
+					 &num_groups);
+
+		if ( -1 != too_small ) {
+		    /* Success! Stop looping. */
+		    break;
+		}
+
+		num_groups *= 2;
+		if ( num_groups >= GROUPLIST_SANITY_LIMIT ) {
+		    Perl_warner(aTHX_ packWARN(WARN_MISC),
+				"Implausibly large number of groups. Expanding past %"IVdf,
+				(IV)num_groups);
+		}
+	    }
+
+	    /* Copy  into the sv */
+	    for ( i = 0; i < num_groups; i++ ) {
+		Perl_sv_catpvf(aTHX_ sv, " %"IVdf,
+			       (IV)*(i+(int*)SvPVX(gary_sv)));
+	    }
+	}
+	(void)SvIOK_on(sv);	/* what a wonderful hack! */
+#else
 #ifdef HAS_GETGROUPS
 	{
 	    Groups_t *gary = NULL;
 	    I32 i, num_groups = getgroups(0, gary);
             Newx(gary, num_groups, Groups_t);
             num_groups = getgroups(num_groups, gary);
-	    for (i = 0; i < num_groups; i++)
+	    for (i = 0; i < num_groups; i++) {
 		Perl_sv_catpvf(aTHX_ sv, " %"IVdf, (IV)gary[i]);
+	    }
             Safefree(gary);
 	}
 	(void)SvIOK_on(sv);	/* what a wonderful hack! */
+#endif
 #endif
 	break;
     case '0':

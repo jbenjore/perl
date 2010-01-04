@@ -186,6 +186,23 @@
 #define Timeval struct timeval	/* Structure used by gettimeofday() */
 #endif
 
+/* HAS_GETGROUPLIST:
+ *	This symbol, if defined, indicates that the getgrouplist() routine is
+ *	available to get the list of process groups.
+ */
+/*#define HAS_GETGROUPLIST		/**/
+
+/* Getgrouplist_basegid_t
+ *	This symbol holds the type for the 2nd argument
+ *	to getgrouplist().
+ */
+/* Getgrouplist_groups_t
+ *	This symbol holds the pointer type for the 3rd argument to
+ *	getgrouplist().
+ */
+/*#define Getgrouplist_basegid_t	gid_t /**/
+/*#define Getgrouplist_groups_t	gid_t /**/
+
 /* HAS_GETGROUPS:
  *	This symbol, if defined, indicates that the getgroups() routine is
  *	available to get the list of process groups.  If unavailable, multiple
@@ -267,6 +284,27 @@
  *	to find the number of bytes in a multibye character.
  */
 /*#define HAS_MBLEN		/ **/
+
+/* HAS_MBR_GID_TO_UUID
+ *	This symbol, if defined, indicates that the mbr_gid_to_uuid
+ *	routine is available for using the DirectoryService daemon to
+ *	convert group ids to uuids.
+ */
+/*#define HAS_MBR_GID_TO_UUID		/**/
+
+/* HAS_MBR_UID_TO_UUID
+ *	This symbol, if defined, indicates that the mbr_uid_to_uuid
+ *	routine is available for using the DirectoryService daemon to
+ *	convert user ids to uuids.
+ */
+/*#define HAS_MBR_UID_TO_UUID		/**/
+
+/* HAS_MBR_CHECK_MEMBERSHIP
+ *	This symbol, if defined, indicates that the
+ *	mbr_check_membership routine is available for using the
+ *	DirectoryService daemon to check group membership for users.
+ */
+/*#define HAS_MBR_CHECK_MEMBERSHIP		/**/
 
 /* HAS_MBSTOWCS:
  *	This symbol, if defined, indicates that the mbstowcs routine is
@@ -619,6 +657,12 @@
  */
 /*#define HAS_USLEEP		/ **/
 
+/* HAS_UUID_UNPARSE:
+ *	This symbol, if defined, indicates that the uuid_unparse routine is
+ *	available.
+ */
+/*#define HAS_UUID_UNPARSE	/**/
+
 /* HAS_WAIT4:
  *	This symbol, if defined, indicates that wait4() exists.
  */
@@ -714,6 +758,12 @@
  *	include <math.h>.
  */
 #define I_MATH		/**/
+
+/* I_MEMBERSHIP:
+ *	This symbol, if defined, indicates to the C program that it should
+ *	include <membership.h>.
+ */
+/*#define    I_MEMBERSHIP		/**/
 
 /* I_MEMORY:
  *	This symbol, if defined, indicates to the C program that it should
@@ -866,6 +916,12 @@
  *	include <utime.h>.
  */
 /*#define I_UTIME		/ **/
+
+/* I_UUID_UUID:
+ *	This symbol, if defined, indicates to the C program that it should
+ *	include <uuid/uuid.h>.
+ */
+/*#define    I_UUID_UUID		/**/
 
 /* I_VALUES:
  *	This symbol, if defined, indicates to the C program that it should

@@ -485,6 +485,9 @@ d_getgrgid_r=''
 getgrgid_r_proto=''
 d_getgrnam_r=''
 getgrnam_r_proto=''
+d_getgrouplist=''
+getgrouplist_basegid_type=''
+getgrouplist_group_type=''
 d_getgrps=''
 d_gethbyaddr=''
 d_gethbyname=''
@@ -591,6 +594,9 @@ d_madvise=''
 d_malloc_good_size=''
 d_malloc_size=''
 d_mblen=''
+d_mbr_gid_to_uuid=''
+d_mbr_uid_to_uuid=''
+d_mbr_check_membership=''
 d_mbstowcs=''
 d_mbtowc=''
 d_memchr=''
@@ -894,6 +900,7 @@ i_malloc=''
 i_mallocmalloc=''
 i_math=''
 i_memory=''
+i_membership=''
 i_mntent=''
 d_gdbm_ndbm_h_uses_prototypes=''
 d_gdbmndbm_h_uses_prototypes=''
@@ -967,6 +974,7 @@ timeincl=''
 i_unistd=''
 i_ustat=''
 i_utime=''
+i_uuid_uuid=''
 i_values=''
 i_stdarg=''
 i_varargs=''
@@ -15221,6 +15229,22 @@ eval $inlibc
 set mblen d_mblen
 eval $inlibc
 
+: see if this is a membership.h system
+set membership.h i_membership
+eval $inhdr
+
+: see if mbr_gid_to_uuid exists
+set mbr_gid_to_uuid d_mbr_gid_to_uuid
+eval $inlibc
+
+: see if mbr_uid_to_uuid exists
+set mbr_uid_to_uuid d_mbr_uid_to_uuid
+eval $inlibc
+
+: see if mbr_check_membership exists
+set mbr_check_membership d_mbr_check_membership
+eval $inlibc
+
 : see if mbstowcs exists
 set mbstowcs d_mbstowcs
 eval $inlibc
@@ -19931,6 +19955,46 @@ case "$gidsign" in
 	;;
 esac
 
+: see if getgrouplist exists
+set getgrouplist d_getgrouplist
+eval $inlibc
+
+: check for type of arguments to getgrouplist.
+if test "X$d_getgrouplist" = $define -a "X$getgrouplist_basegid_type" = X -o "X$getgrouplist_group_type" = X; then
+	$cat <<EOM
+
+Checking to see what type of arguments are accepted by getgrouplist().
+EOM
+	hdrs="$i_unistd unistd.h $i_grp grp.h"
+	: The first arg is const char*
+	: The second arg can be either gid_t or int
+	: The third arg can be either gid_t* or int*
+	: The fourth arg is int*
+	case "$getgrouplist_group_type" in
+	'') try="$externC int getgrouplist(const char *, gid_t, gid_t *, int *);"
+	    if ./protochk "$try" $hdrs; then
+	      getgrouplist_basegid_type='gid_t'
+	      getgrouplist_group_type='gid_t'
+	    fi
+	    ;;
+	esac
+
+	case "$getgrouplist_group_type" in
+	'') try="$externC int getgrouplist(const char *, int, int *, int *);"
+	    if ./protochk "$try" $hdrs; then
+	      getgrouplist_basegid_type='int'
+	      getgrouplist_group_type='int'
+	    fi
+	    ;;
+	esac
+fi
+
+if test "X$getgrouplist_basegid_type" = X -o "X$getgrouplist_group_type" = X; then
+	d_getgrouplist=$undef
+	getgrouplist_basegid_type='int'
+	getgrouplist_group_type='int'
+fi
+
 : see if getgroups exists
 set getgroups d_getgrps
 eval $inlibc
@@ -21723,6 +21787,14 @@ eval $inhdr
 set utime.h i_utime
 eval $inhdr
 
+: see if this an uuid/uuid.h system
+set uuid/uuid.h i_uuid_uuid
+eval $inhdr
+
+: see if uuid_unparse exists
+set uuid_unparse d_uuid_unparse
+eval $inlibc
+
 : see if this is a vfork system
 case "$d_vfork" in
 "$define")
@@ -22467,6 +22539,7 @@ d_getgrent='$d_getgrent'
 d_getgrent_r='$d_getgrent_r'
 d_getgrgid_r='$d_getgrgid_r'
 d_getgrnam_r='$d_getgrnam_r'
+d_getgrouplist='$d_getgrouplist'
 d_getgrps='$d_getgrps'
 d_gethbyaddr='$d_gethbyaddr'
 d_gethbyname='$d_gethbyname'
@@ -22553,6 +22626,9 @@ d_madvise='$d_madvise'
 d_malloc_good_size='$d_malloc_good_size'
 d_malloc_size='$d_malloc_size'
 d_mblen='$d_mblen'
+d_mbr_gid_to_uuid='$d_mbr_gid_to_uuid'
+d_mbr_uid_to_uuid='$d_mbr_uid_to_uuid'
+d_mbr_check_membership='$d_mbr_check_membership'
 d_mbstowcs='$d_mbstowcs'
 d_mbtowc='$d_mbtowc'
 d_memchr='$d_memchr'
@@ -22763,6 +22839,7 @@ d_unsetenv='$d_unsetenv'
 d_usleep='$d_usleep'
 d_usleepproto='$d_usleepproto'
 d_ustat='$d_ustat'
+d_uuid_unparse='$d_uuid_unparse'
 d_vendorarch='$d_vendorarch'
 d_vendorbin='$d_vendorbin'
 d_vendorlib='$d_vendorlib'
@@ -22830,6 +22907,8 @@ gccversion='$gccversion'
 getgrent_r_proto='$getgrent_r_proto'
 getgrgid_r_proto='$getgrgid_r_proto'
 getgrnam_r_proto='$getgrnam_r_proto'
+getgrouplist_basegid_type='$getgrouplist_basegid_type'
+getgrouplist_group_type='$getgrouplist_group_type'
 gethostbyaddr_r_proto='$gethostbyaddr_r_proto'
 gethostbyname_r_proto='$gethostbyname_r_proto'
 gethostent_r_proto='$gethostent_r_proto'
@@ -22902,6 +22981,7 @@ i_machcthr='$i_machcthr'
 i_malloc='$i_malloc'
 i_mallocmalloc='$i_mallocmalloc'
 i_math='$i_math'
+i_membership='$i_membership'
 i_memory='$i_memory'
 i_mntent='$i_mntent'
 i_ndbm='$i_ndbm'
@@ -22958,6 +23038,7 @@ i_time='$i_time'
 i_unistd='$i_unistd'
 i_ustat='$i_ustat'
 i_utime='$i_utime'
+i_uuid_uuid='$i_uuid_uuid'
 i_values='$i_values'
 i_varargs='$i_varargs'
 i_varhdr='$i_varhdr'

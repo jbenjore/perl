@@ -199,6 +199,24 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
 #define Timeval struct timeval	/* Structure used by gettimeofday() */
 #endif
 
+/* HAS_GETGROUPLIST:
+ *	This symbol, if defined, indicates that the getgrouplist() routine is
+ *	available to get the list of process groups.
+ */
+#$d_getgrouplist HAS_GETGROUPLIST		/**/
+
+/* Getgrouplist_basegid_t
+ *	This symbol holds the type for the 2nd argument
+ *	to getgrouplist().
+ */
+/* Getgrouplist_group_t
+ *	This symbol holds the pointer type for the 3rd argument to
+ *	getgrouplist().
+ */
+#define Getgrouplist_basegid_t	$getgrouplist_basegid_type /**/
+#define Getgrouplist_group_t	$getgrouplist_group_type /**/
+
+
 /* HAS_GETGROUPS:
  *	This symbol, if defined, indicates that the getgroups() routine is
  *	available to get the list of process groups.  If unavailable, multiple
@@ -280,6 +298,27 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
  *	to find the number of bytes in a multibye character.
  */
 #$d_mblen HAS_MBLEN		/**/
+
+/* HAS_MBR_GID_TO_UUID
+ *	This symbol, if defined, indicates that the mbr_gid_to_uuid
+ *	routine is available for using the DirectoryService daemon to
+ *	convert group ids to uuids.
+ */
+#$d_mbr_gid_to_uuid HAS_MBR_GID_TO_UUID		/**/
+
+/* HAS_MBR_UID_TO_UUID
+ *	This symbol, if defined, indicates that the mbr_uid_to_uuid
+ *	routine is available for using the DirectoryService daemon to
+ *	convert user ids to uuids.
+ */
+#$d_mbr_uid_to_uuid	HAS_MBR_UID_TO_UUID		/**/
+
+/* HAS_MBR_CHECK_MEMBERSHIP
+ *	This symbol, if defined, indicates that the
+ *	mbr_check_membership routine is available for using the
+ *	DirectoryService daemon to check group membership for users.
+ */
+#$d_mbr_check_membership	HAS_MBR_CHECK_MEMBERSHIP		/**/
 
 /* HAS_MBSTOWCS:
  *	This symbol, if defined, indicates that the mbstowcs routine is
@@ -632,6 +671,12 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
  */
 #$d_usleep HAS_USLEEP		/**/
 
+/* HAS_UUID_UNPARSE:
+ *	This symbol, if defined, indicates that the uuid_unparse routine is
+ *	available.
+ */
+#$d_uuid_unparse HAS_UUID_UNPARSE		/**/
+
 /* HAS_WAIT4:
  *	This symbol, if defined, indicates that wait4() exists.
  */
@@ -727,6 +772,12 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
  *	include <math.h>.
  */
 #$i_math I_MATH		/**/
+
+/* I_MEMBERSHIP:
+ *	This symbol, if defined, indicates to the C program that it should
+ *	include <membership.h>.
+ */
+#$i_membership I_MEMBERSHIP	/**/
 
 /* I_MEMORY:
  *	This symbol, if defined, indicates to the C program that it should
@@ -879,6 +930,12 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
  *	include <utime.h>.
  */
 #$i_utime I_UTIME		/**/
+
+/* I_UUID_UUID:
+ *	This symbol, if defined, indicates to the C program that it should
+ *	include <uuid/uuid.h>.
+ */
+#$i_uuid_uuid I_UUID_UUID	/**/
 
 /* I_VALUES:
  *	This symbol, if defined, indicates to the C program that it should

@@ -77,7 +77,7 @@ NETDB_DEFINE_CONTEXT
 #if defined(HOST_NOT_FOUND) && !defined(h_errno) && !defined(__CYGWIN__)
 extern int h_errno;
 #endif
-
+/* TODO: duplicated in mg.c, pp_sys.c */
 #ifdef HAS_PASSWD
 # ifdef I_PWD
 #  include <pwd.h>

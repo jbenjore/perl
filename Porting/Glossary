@@ -967,6 +967,11 @@ d_getgrnam_r (d_getgrnam_r.U):
 	which indicates to the C program that the getgrnam_r()
 	routine is available.
 
+d_getgrouplist (TODO):
+	This variable conditionally defines the C<HAS_GETGROUPLIST> symbol,
+	which indicates to the C program that the getgrouplist() routine is
+	available to get the list of process groups.
+
 d_getgrps (d_getgrps.U):
 	This variable conditionally defines the HAS_GETGROUPS symbol, which
 	indicates to the C program that the getgroups() routine is available
@@ -1370,6 +1375,24 @@ d_mblen (d_mblen.U):
 	This variable conditionally defines the HAS_MBLEN symbol, which
 	indicates to the C program that the mblen() routine is available
 	to find the number of bytes in a multibye character.
+
+d_mbr_gid_to_uuid (TODO):
+	This variable conditionally defines the HAS_MBR_GID_TO_UUID
+	symbol, which indicates to the C program that the
+	mbr_gid_to_uuid() routine is available for using the
+	DirectoryService daemon to convert group ids to uuids.
+
+d_mbr_uid_to_uuid (TODO):
+	This variable conditionally defines the HAS_MBR_UID_TO_UUID
+	symbol, which indicates to the C program that the
+	mbr_uid_to_uuid() routine is available for using the
+	DirectoryService daemon to convert user ids to uuids.
+
+d_mbr_check_membership (TODO):
+	This variable conditionally defines the HAS_MBR_UID_TO_UUID
+	symbol, which indicates to the C program that the
+	mbr_uid_to_uuid() routine is available for using the
+	DirectoryService daemon to check group membership for users.
 
 d_mbstowcs (d_mbstowcs.U):
 	This variable conditionally defines the HAS_MBSTOWCS symbol, which
@@ -2398,6 +2421,10 @@ d_ustat (d_ustat.U):
 	This variable conditionally defines HAS_USTAT if ustat() is
 	available to query file system statistics by dev_t.
 
+d_uuid_unparse (TODO):
+	This variable conditionally defines HAS_UUID_UNPARSE if
+	uuid_unparse() is available.
+
 d_vendorarch (vendorarch.U):
 	This variable conditionally defined PERL_VENDORARCH.
 
@@ -2713,6 +2740,14 @@ getgrgid_r_proto (d_getgrgid_r.U):
 	It is zero if d_getgrgid_r is undef, and one of the
 	REENTRANT_PROTO_T_ABC macros of reentr.h if d_getgrgid_r
 	is defined.
+
+getgrouplist_basegid_type (TODO)
+	This variable holds the type for the 2nd argument
+	to getgrouplist().
+
+getgrouplist_group_type (TODO)
+	This symbol holds the pointer type for the 3rd argument to
+	getgrouplist().
 
 getgrnam_r_proto (d_getgrnam_r.U):
 	This variable encodes the prototype of getgrnam_r.
@@ -3065,6 +3100,10 @@ i_math (i_math.U):
 	This variable conditionally defines the I_MATH symbol, and indicates
 	whether a C program may include <math.h>.
 
+i_membership (TODO):
+	This variable conditionally defines the C<I_MEMBERSHIP> symbol, and
+	indicates whether a C program may include <membership.h>.
+
 i_memory (i_memory.U):
 	This variable conditionally defines the I_MEMORY symbol, and indicates
 	whether a C program should include <memory.h>.
@@ -3301,6 +3340,10 @@ i_unistd (i_unistd.U):
 i_ustat (i_ustat.U):
 	This variable conditionally defines the I_USTAT symbol, and indicates
 	whether a C program should include <ustat.h>.
+
+i_uuid_uuid (TODO):
+	This variable conditionally defines the C<I_UUID_UUID> symbol, and
+	indicates whether a C program should include <uuid/uuid.h>
 
 i_utime (i_utime.U):
 	This variable conditionally defines the I_UTIME symbol, and indicates
