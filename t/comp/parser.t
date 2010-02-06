@@ -3,7 +3,7 @@
 # Checks if the parser behaves correctly in edge cases
 # (including weird syntax errors)
 
-print "1..122\n";
+print "1..126\n";
 
 sub failed {
     my ($got, $expected, $name) = @_;
@@ -68,6 +68,22 @@ like( $@, qr/^Missing right brace on \\N/,
 eval q/"\Nfoo"/;
 like( $@, qr/^Missing braces on \\N/,
     'syntax error in string with incomplete \N' );
+
+eval q/"\N{1}"/;
+like( $@, qr/^Constant.*unknown/,
+    'Verify that \N{1} in string treats as charname, not the match non-newline it would be in a pattern' );
+
+eval q/"\N{U+}"/;
+like ( $@, qr/Invalid hexadecimal number/,
+    'Verify get syntax error in string with empty \N{U+}' );
+
+eval q/"\N{U+0xBEEF}"/;
+like ( $@, qr/Invalid hexadecimal number/,
+       'Verify that \N{U+illegal} in string gives error' );
+
+eval q/"\N{U+BEEF.DEAD}"/;
+like ( $@, qr/Invalid hexadecimal number/,
+       'Verify that \N{U+valid.valid} in string gives error' );
 
 eval "a.b.c.d.e.f;sub";
 like( $@, qr/^Illegal declaration of anonymous subroutine/,
@@ -195,7 +211,7 @@ EOF
     like( $@, qr/syntax error/, "use without body" );
 }
 
-# [perl #2738] perl segfautls on input
+# [perl #2738] perl segfaults on input
 {
     eval q{ sub _ <> {} };
     like($@, qr/Illegal declaration of subroutine main::_/, "readline operator as prototype");

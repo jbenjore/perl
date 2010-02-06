@@ -43,6 +43,9 @@
 #endif
 #define get_context		Perl_get_context
 #define set_context		Perl_set_context
+#ifdef PERL_CORE
+#define regcurly		Perl_regcurly
+#endif
 #define amagic_call		Perl_amagic_call
 #define Gv_AMupdate		Perl_Gv_AMupdate
 #define gv_handler		Perl_gv_handler
@@ -1446,7 +1449,6 @@
 #define regbranch		S_regbranch
 #define reguni			S_reguni
 #define regclass		S_regclass
-#define regcurly		S_regcurly
 #define reg_node		S_reg_node
 #define reg_recode		S_reg_recode
 #define regpiece		S_regpiece
@@ -2453,6 +2455,9 @@
 #endif
 #define get_context		Perl_get_context
 #define set_context		Perl_set_context
+#ifdef PERL_CORE
+#define regcurly		Perl_regcurly
+#endif
 #define amagic_call(a,b,c,d)	Perl_amagic_call(aTHX_ a,b,c,d)
 #define Gv_AMupdate(a,b)	Perl_Gv_AMupdate(aTHX_ a,b)
 #define gv_handler(a,b)		Perl_gv_handler(aTHX_ a,b)
@@ -3854,7 +3859,6 @@
 #define regbranch(a,b,c,d)	S_regbranch(aTHX_ a,b,c,d)
 #define reguni(a,b,c)		S_reguni(aTHX_ a,b,c)
 #define regclass(a,b)		S_regclass(aTHX_ a,b)
-#define regcurly		S_regcurly
 #define reg_node(a,b)		S_reg_node(aTHX_ a,b)
 #define reg_recode(a,b)		S_reg_recode(aTHX_ a,b)
 #define regpiece(a,b,c)		S_regpiece(aTHX_ a,b,c)

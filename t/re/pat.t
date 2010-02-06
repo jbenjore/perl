@@ -21,7 +21,7 @@ BEGIN {
 }
 
 
-plan tests => 293;  # Update this when adding/deleting tests.
+plan tests => 295;  # Update this when adding/deleting tests.
 
 run_tests() unless caller;
 
@@ -968,6 +968,20 @@ sub run_tests {
         iseq "@space1", "cr ff lf spc tab vt";
         iseq "@space2", "spc tab";
     }
+
+    {
+        use charnames ":full";
+        local $Message = 'Delayed interpolation of \N';
+        my $r1 = qr/\N{THAI CHARACTER SARA I}/;
+        my $s1 = "\x{E34}\x{E34}\x{E34}\x{E34}";
+
+        # Bug #56444
+        ok $s1 =~ /$r1+/, 'my $r1 = qr/\N{THAI CHARACTER SARA I}/; my $s1 = "\x{E34}\x{E34}\x{E34}\x{E34}; $s1 =~ /$r1+/';
+
+        # Bug #62056
+        ok "${s1}A" =~ m/$s1\N{LATIN CAPITAL LETTER A}/, '"${s1}A" =~ m/$s1\N{LATIN CAPITAL LETTER A}/'
+    }
+
 
 } # End of sub run_tests
 
