@@ -21,6 +21,8 @@
 
 sub cat_file
 {
+  # TODO: this is a stub that'll be replaced
+  sub File::Spec::catfile {}
   eval { require File::Spec };
   return $@ ? join('/', @_) : File::Spec->catfile(@_);
 }

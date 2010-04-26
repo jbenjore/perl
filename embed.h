@@ -1249,6 +1249,10 @@
 #endif
 #if defined(PERL_IN_OP_C) || defined(PERL_DECL_PROT)
 #ifdef PERL_CORE
+#define strict_classes_p	S_strict_classes_p
+#define ck_strict_classes	S_ck_strict_classes
+#define strict_methods_p	S_strict_methods_p
+#define ck_strict_methods	S_ck_strict_methods
 #define ck_anoncode		Perl_ck_anoncode
 #define ck_bitop		Perl_ck_bitop
 #define ck_concat		Perl_ck_concat
@@ -3654,6 +3658,10 @@
 #endif
 #if defined(PERL_IN_OP_C) || defined(PERL_DECL_PROT)
 #ifdef PERL_CORE
+#define strict_classes_p()	S_strict_classes_p(aTHX)
+#define ck_strict_classes(a)	S_ck_strict_classes(aTHX_ a)
+#define strict_methods_p()	S_strict_methods_p(aTHX)
+#define ck_strict_methods(a,b)	S_ck_strict_methods(aTHX_ a,b)
 #define ck_anoncode(a)		Perl_ck_anoncode(aTHX_ a)
 #define ck_bitop(a)		Perl_ck_bitop(aTHX_ a)
 #define ck_concat(a)		Perl_ck_concat(aTHX_ a)

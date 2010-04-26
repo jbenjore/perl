@@ -353,7 +353,8 @@ S_pad_add_name_sv(pTHX_ SV *namesv, const U32 flags, HV *typestash,
     if (typestash) {
 	assert(SvTYPE(namesv) == SVt_PVMG);
 	SvPAD_TYPED_on(namesv);
-	SvSTASH_set(namesv, MUTABLE_HV(SvREFCNT_inc_simple_NN(MUTABLE_SV(typestash))));
+	SvSTASH_set(namesv,
+		    MUTABLE_HV(SvREFCNT_inc_simple_NN(MUTABLE_SV(typestash))));
     }
     if (ourstash) {
 	SvPAD_OUR_on(namesv);

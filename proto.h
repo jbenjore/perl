@@ -4497,7 +4497,25 @@ STATIC void	S_unwind_handler_stack(pTHX_ const void *p)
 
 #endif
 
+
 #if defined(PERL_IN_OP_C) || defined(PERL_DECL_PROT)
+STATIC int	S_strict_classes_p(pTHX)
+			__attribute__warn_unused_result__;
+
+STATIC void	S_ck_strict_classes(pTHX_ OP *invocant_op)
+			__attribute__nonnull__(pTHX_1);
+#define PERL_ARGS_ASSERT_CK_STRICT_CLASSES	\
+	assert(invocant_op)
+
+STATIC int	S_strict_methods_p(pTHX)
+			__attribute__warn_unused_result__;
+
+STATIC void	S_ck_strict_methods(pTHX_ OP *method_op, OP *invocant_op)
+			__attribute__nonnull__(pTHX_1)
+			__attribute__nonnull__(pTHX_2);
+#define PERL_ARGS_ASSERT_CK_STRICT_METHODS	\
+	assert(method_op); assert(invocant_op)
+
 PERL_CALLCONV OP*	Perl_ck_anoncode(pTHX_ OP *o)
 			__attribute__warn_unused_result__
 			__attribute__nonnull__(pTHX_1);

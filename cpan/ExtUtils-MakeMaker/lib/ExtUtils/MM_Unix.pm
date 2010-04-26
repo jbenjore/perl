@@ -2643,6 +2643,7 @@ sub parse_version {
             my $eval = qq{
                 package ExtUtils::MakeMaker::_version;
                 no strict;
+                sub version::import {} # TODO: stub properly somehow
                 BEGIN { eval {
                     # Ensure any version() routine which might have leaked
                     # into this package has been deleted.  Interferes with

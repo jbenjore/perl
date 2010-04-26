@@ -103,6 +103,10 @@ my @names = qw(
 	__R_UNUSED
 	);
 
+# TODO: remove this unconditional require before committing. This
+# exists to force the failures inside ExtUtils::Constant into the
+# light.
+require ExtUtils::Constant;
 if (eval {require ExtUtils::Constant; 1}) {
     # Check the constants above all appear in @EXPORT in DB_File.pm
     my %names = map { $_, 1} @names;

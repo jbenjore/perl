@@ -502,6 +502,9 @@ sub WriteConstants {
 	  # IO is available (needed by filehandle), but also we want to work on
 	  # older perls where undefined scalars do not automatically turn into
 	  # anonymous file handles.
+
+	  # TODO: this a stub and will be removed
+	  sub FileHandle::new {};
 	  require FileHandle;
 	  $c_fh = FileHandle->new();
       }
@@ -523,6 +526,7 @@ sub WriteConstants {
   
   if ($ARGS{PROXYSUBS}) {
       require ExtUtils::Constant::ProxySubs;
+      sub ExtUtils::Constant::ProxySubs::WriteConstants {}; # TODO: stub somehow
       $ARGS{C_FH} = $c_fh;
       $ARGS{XS_FH} = $xs_fh;
       ExtUtils::Constant::ProxySubs->WriteConstants(%ARGS);
