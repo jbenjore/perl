@@ -111,10 +111,17 @@ sub mycan {				# Real can would leave stubs.
   local $!;
   require mro;
 
-  my $mro = mro::get_linear_isa($package);
-  foreach my $p (@$mro) {
-    my $fqmeth = $p . q{::} . $meth;
-    return \*{$fqmeth} if defined &{$fqmeth};
+  my @start_at = (
+    $package,
+    'UNIVERSAL'
+  );
+
+  foreach my $starting_p (@start_at) {
+    my $mro = mro::get_linear_isa($starting_p);
+    foreach my $p (@$mro) {
+      my $fqmeth = $p . q{::} . $meth;
+      return \*{$fqmeth} if defined &{$fqmeth};
+    }
   }
 
   return undef;
