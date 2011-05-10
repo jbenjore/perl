@@ -1460,6 +1460,26 @@ Perl_despatch_signals(pTHX)
     dVAR;
     int sig;
     PL_sig_pending = 0;
+
+    /* Normal signal handlers never set PL_sig_pending=1 when there's
+     * no PL_psig_pend so this case is pathological and handles the
+     * case where a user attached to a process with gdb and faked a
+     * signal to find a place to run arbitrary perl.
+     *
+     *     set PL_sig_pending = 1
+     *     break Perl_despatch_signals
+     *     continue
+     *     if Perl_get_context()
+     *         call Perl_eval_pv(Perl_get_context(), "print qq{Hello world!\n}", 0)
+     *     else
+     *         call Perl_eval_pv("print qq{Hello world!\n}", 0)
+     *     end
+     *     detach
+     */
+    if (!PL_psig_pend) {
+        return;
+    }
+
     for (sig = 1; sig < SIG_SIZE; sig++) {
 	if (PL_psig_pend[sig]) {
 	    dSAVE_ERRNO;
